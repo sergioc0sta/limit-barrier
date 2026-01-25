@@ -38,6 +38,7 @@ A rate limiter in Go that limits requests per second by client IP or by access t
    REDIS_ADDR=localhost:6379
    REDIS_PASSWORD=
    REDIS_DB=0
+   STORAGE_DRIVER=redis
 
    IP_MAX_REQ=5
    TOKEN_MAX_REQ=100
@@ -131,18 +132,12 @@ wait
 │   └── server/
 │       └── main.go
 ├── configs/
-│   └── config.go
+│   └── load_config_redis.go
 ├── internal/
-│   └── middleware/
-│       └── ratelimiter.go
-├── pkg/
-│   └── ratelimiter/
-│       ├── limiter.go
-│       ├── redis_strategy.go
-│       └── strategy.go
-├── test/
-│   ├── ratelimiter_test.go
-│   └── integration_test.go
+│   └── storage/
+│       ├── storage.go
+│       └── redis/
+│           └── store.go
 ├── .env.example
 ├── docker-compose.yml
 └── README.md

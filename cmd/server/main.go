@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/sergioc0sta/limit-barrier/configs"
-	"github.com/sergioc0sta/limit-barrier/internal/infra/redis"
+	"github.com/sergioc0sta/limit-barrier/internal/storage"
 )
 
 func main() {
@@ -13,13 +15,16 @@ func main() {
 		panic(err)
 	}
 
-	clientRedis := redis.NewClient(v.RedisAddr, v.RedisPassword, v.RedisDB)
-	defer clientRedis.Close()
+	store, err := storage.NewStore(v)
+	if err != nil {
+		panic(err)
+	}
+	defer store.Close()
 
-	if err := clientRedis.IsWorking(); err != nil {
-		panic("Redis is not working: " + err.Error())
+	if err := store.Ping(context.Background()); err != nil {
+		panic("Storage is not working: " + err.Error())
 	} else {
-		println("Redis is working.......")
+		println("Storage is working.......")
 	}
 
 	println("Config loaded:", v.RedisAddr)
