@@ -47,7 +47,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	return &Config{
-		StorageDriver: getenvDefault("STORAGE_DRIVER", "redis"),
+		StorageDriver: os.Getenv("STORAGE_DRIVER"),
 		RedisAddr:     os.Getenv("REDIS_ADDR"),
 		RedisPassword: os.Getenv("REDIS_PASSWORD"),
 		RedisDB:       redisDB,
@@ -58,9 +58,3 @@ func NewConfig() (*Config, error) {
 	}, nil
 }
 
-func getenvDefault(key, def string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return def
-}
