@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: limit-barrier-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    command: redis-server --port ${REDIS_PORT} --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - limit-barrier-volume:/data
+
+volumes:
+  limit-barrier-volume:
