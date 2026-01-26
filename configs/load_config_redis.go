@@ -9,14 +9,16 @@ import (
 )
 
 type Config struct {
-	StorageDriver string
-	RedisAddr     string
-	RedisPassword string
-	RedisDB       int
-	IPMaxReq      int
-	TokenMaxReq   int
-	BlockTime     int
-	RateLimitDur  string
+	StorageDriver   string
+	RedisAddr       string
+	RedisPassword   string
+	RedisDB         int
+	IPMaxReq        int
+	TokenMaxReq     int
+	BlockTime       int
+	RateLimitDur    string
+	TokenLimits     map[string]int
+	TokenLimitsPath string
 }
 
 func NewConfig() (*Config, error) {
@@ -46,15 +48,25 @@ func NewConfig() (*Config, error) {
 		return nil, err
 	}
 
+	tokenLimitsPath := os.Getenv("TOKEN_LIMITS_PATH")
+	if tokenLimitsPath == "" {
+		tokenLimitsPath = "configs/token_limits.json"
+	}
+	tokenLimits, err := LoadTokenLimits(tokenLimitsPath)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Config{
-		StorageDriver: os.Getenv("STORAGE_DRIVER"),
-		RedisAddr:     os.Getenv("REDIS_ADDR"),
-		RedisPassword: os.Getenv("REDIS_PASSWORD"),
-		RedisDB:       redisDB,
-		IPMaxReq:      ipMaxReq,
-		TokenMaxReq:   tokenMaxReq,
-		BlockTime:     blockTime,
-		RateLimitDur:  os.Getenv("RATE_LIMIT_DUR"),
+		StorageDriver:   os.Getenv("STORAGE_DRIVER"),
+		RedisAddr:       os.Getenv("REDIS_ADDR"),
+		RedisPassword:   os.Getenv("REDIS_PASSWORD"),
+		RedisDB:         redisDB,
+		IPMaxReq:        ipMaxReq,
+		TokenMaxReq:     tokenMaxReq,
+		BlockTime:       blockTime,
+		RateLimitDur:    os.Getenv("RATE_LIMIT_DUR"),
+		TokenLimits:     tokenLimits,
+		TokenLimitsPath: tokenLimitsPath,
 	}, nil
 }
-

@@ -44,6 +44,7 @@ A rate limiter in Go that limits requests per second by client IP or by access t
    TOKEN_MAX_REQ=100
    BLOCK_TIME=300
    RATE_LIMIT_DUR=1s
+   TOKEN_LIMITS_PATH=configs/token_limits.json
    ```
 
 3. Start Redis with Docker Compose:
@@ -59,6 +60,24 @@ A rate limiter in Go that limits requests per second by client IP or by access t
    ```
 
    The server will be available on port `8080`.
+
+## Token limits (per token)
+
+You can configure per-token limits via a JSON file (default: `configs/token_limits.json`).
+Override the path with `TOKEN_LIMITS_PATH`.
+If a request has a token that is not listed in the JSON (or no token at all), the limiter falls back to IP-based limits.
+
+Example `configs/token_limits.json`:
+
+```json
+[
+  { "token": "TOKEN_BASIC", "limit": 100 },
+  { "token": "TOKEN_SILVER", "limit": 200 },
+  { "token": "TOKEN_GOLD", "limit": 300 },
+  { "token": "TOKEN_PLATINUM", "limit": 400 },
+  { "token": "TOKEN_ULTRA", "limit": 500 }
+]
+```
 
 ## How to use
 

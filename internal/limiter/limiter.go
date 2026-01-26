@@ -6,11 +6,11 @@ import (
 )
 
 type Limiter struct {
-	strategy     RateLimiterStrategy
-	ipMaxReq     int
-	tokenMaxReq  int
-	window       time.Duration
-	blockTime    time.Duration
+	strategy    RateLimiterStrategy
+	ipMaxReq    int
+	tokenMaxReq int
+	window      time.Duration
+	blockTime   time.Duration
 }
 
 func NewLimiter(strategy RateLimiterStrategy, ipMaxReq, tokenMaxReq int, window, blockTime time.Duration) (*Limiter, error) {
