@@ -1,0 +1,7 @@
+[
+  { "token": "TOKEN_BASIC", "limit": 100 },
+  { "token": "TOKEN_SILVER", "limit": 200 },
+  { "token": "TOKEN_GOLD", "limit": 300 },
+  { "token": "TOKEN_PLATINUM", "limit": 400 },
+  { "token": "TOKEN_ULTRA", "limit": 500 }
+]
