@@ -26,13 +26,7 @@ A rate limiter in Go that limits requests per second by client IP or by access t
    cd limit-barrier
    ```
 
-2. Copy `.env.example` to `.env` and adjust the values:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Example `.env`:
+2. Create a `.env` file in the project root and adjust the values:
 
    ```env
    REDIS_ADDR=localhost:6379
@@ -47,19 +41,21 @@ A rate limiter in Go that limits requests per second by client IP or by access t
    TOKEN_LIMITS_PATH=configs/token_limits.json
    ```
 
-3. Start Redis with Docker Compose:
+3. Run everything with Docker Compose (app + Redis):
 
    ```bash
-   docker-compose up -d redis
+   docker-compose up --build
    ```
 
-4. Run the server:
+4. The server will be available on port `8080`.
 
-   ```bash
-   go run cmd/server/main.go
-   ```
+## Tests
 
-   The server will be available on port `8080`.
+Run unit tests:
+
+```bash
+go test ./...
+```
 
 ## Token limits (per token)
 
@@ -110,24 +106,10 @@ Send the token in the `API_KEY` header.
 Example:
 
 ```bash
-curl -H "API_KEY: abc123" http://localhost:8080/ping
+curl -H "API_KEY: TOKEN_SILVER" http://localhost:8080/ping
 ```
 
 The rate limiter will use the configured limit for that token (if any), which overrides the IP limit.
-
-## Tests
-
-Run unit tests:
-
-```bash
-go test ./...
-```
-
-Run integration tests:
-
-```bash
-go test -tags=integration ./test/integration_test.go
-```
 
 ## Load testing
 
@@ -152,12 +134,16 @@ wait
 │       └── main.go
 ├── configs/
 │   └── load_config_redis.go
+│   └── token_limits.json
 ├── internal/
+│   ├── limiter/
+│   ├── middleware/
 │   └── storage/
 │       ├── storage.go
 │       └── redis/
+│           ├── rate_limiter.go
 │           └── store.go
-├── .env.example
+├── Dockerfile
 ├── docker-compose.yml
 └── README.md
 ```

@@ -1,6 +1,20 @@
 version: "3.9"
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: limit-barrier-app
+    env_file:
+      - .env
+    environment:
+      - REDIS_ADDR=redis:${REDIS_PORT}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+
   redis:
     image: redis:7-alpine
     container_name: limit-barrier-redis
