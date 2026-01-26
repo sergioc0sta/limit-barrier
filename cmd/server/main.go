@@ -1,10 +1,14 @@
 package main
 
 import (
+	"context"
+	"log"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/sergioc0sta/limit-barrier/configs"
-	"github.com/sergioc0sta/limit-barrier/internal/infra/redis"
+	"github.com/sergioc0sta/limit-barrier/internal/middleware"
+	"github.com/sergioc0sta/limit-barrier/internal/storage"
 )
 
 func main() {
@@ -13,20 +17,27 @@ func main() {
 		panic(err)
 	}
 
-	clientRedis := redis.NewClient(v.RedisAddr, v.RedisPassword, v.RedisDB)
-	defer clientRedis.Close()
+	store, err := storage.NewStore(v)
+	if err != nil {
+		panic(err)
+	}
+	defer store.Close()
 
-	if err := clientRedis.IsWorking(); err != nil {
-		panic("Redis is not working: " + err.Error())
+	middlewareRateLimiter := middleware.RateLimiter()
+
+	if err := store.Ping(context.Background()); err != nil {
+		panic("Storage is not working: " + err.Error())
 	} else {
-		println("Redis is working.......")
+		println("Storage is working.......")
 	}
 
 	println("Config loaded:", v.RedisAddr)
 
 	r := gin.Default()
-
+	r.Use(middlewareRateLimiter)
 	r.GET("/ping", func(c *gin.Context) {
+		ip := c.GetString("client_ip")
+		log.Printf("Client IP: %s made request!", ip)
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})

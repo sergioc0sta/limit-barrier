@@ -9,6 +9,7 @@ import (
 )
 
 type Config struct {
+	StorageDriver string
 	RedisAddr     string
 	RedisPassword string
 	RedisDB       int
@@ -46,6 +47,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	return &Config{
+		StorageDriver: os.Getenv("STORAGE_DRIVER"),
 		RedisAddr:     os.Getenv("REDIS_ADDR"),
 		RedisPassword: os.Getenv("REDIS_PASSWORD"),
 		RedisDB:       redisDB,
@@ -55,3 +57,4 @@ func NewConfig() (*Config, error) {
 		RateLimitDur:  os.Getenv("RATE_LIMIT_DUR"),
 	}, nil
 }
+
