@@ -2,19 +2,18 @@ package middleware
 
 import (
 	"log"
-	"time"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/sergioc0sta/limit-barrier/internal/utils"
 )
 
 func RateLimiter() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		clientIP := c.ClientIP()
-		c.Set("client_ip", clientIP)
-		apiKey := c.GetHeader("API_KEY")
-		c.Set("api_key", apiKey)
+		clientIP, apiKey := utils.GetIpAndToken(c)
 
 		if clientIP == "192.168.0.101" {
 			log.Printf("===  Acesso bloqueado para o IP: %s  ===", clientIP)
